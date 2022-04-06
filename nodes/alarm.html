@@ -1,59 +1,26 @@
-<!-- Helpful things
-    input types: https://www.w3schools.com/html/html_form_input_types.asp
-    https://fontawesome.com/v4.7/icons/
--->
+<!-- START OF MAIN NODE -->
 
 <script type="text/javascript">
-    RED.nodes.registerType('mytemplate-config',{
-        category: 'config',
-        defaults: {
-            name: {value: "", required: true},
-            value: {value: 1234, required: true},
-        },
-        label: function() {
-            return this.name + ": " + this.value;
-        }
-    });
-</script>
-
-<script type="text/html" data-template-name="mytemplate-config">
-    <div class="form-row">
-        <label for="node-config-input-name"><i class="fa fa-bookmark"></i> Name</label>
-        <input type="text" id="node-config-input-name">
-    </div>
-    <div class="form-row">
-        <label for="node-config-input-value"><i class="fa fa-bookmark"></i> Value</label>
-        <input type="text" id="node-config-input-value">
-    </div>
-</script>
-
-
-
-<script type="text/javascript">
-    RED.nodes.registerType('mytemplate',{
+    RED.nodes.registerType('alarm',{
         category: 'Smart Home',
         color: '#C0DEED',
         inputs: 1,
         outputs: 1,
-        icon: "font-awesome/fa-lightbulb-o",
+        icon: "font-awesome/fa-bullhorn",
         defaults: {
             name: {},
-            server: {value: "", type: "mytemplate-config"}
         },
         label: function() {
-            return this.name || "My template node"
+            return this.name || "Alarm"
         }
     });
 </script>
 
 
-<script type="text/html" data-template-name="mytemplate">
+<script type="text/html" data-template-name="alarm">
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]placeholder.name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-server"><i class="fa fa-cogs"></i> Config</label>
-        <input type="text" id="node-input-server">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
     </div>
 </script>
+
+<!-- END OF MAIN NODE -->

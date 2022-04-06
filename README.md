@@ -1,0 +1,1 @@
+Secure your smart home with this alarm node. It monitors signals and triggers the output on unexpected events.
