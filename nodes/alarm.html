@@ -9,6 +9,7 @@
         icon: "font-awesome/fa-bullhorn",
         defaults: {
             name: {},
+            debug: {}
         },
         label: function() {
             return this.name || "Alarm"
@@ -20,6 +21,11 @@
 <script type="text/html" data-template-name="alarm">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+    <div class="form-row">
+        <label><i class="fa fa-bug"></i> Debugging</label>
+        <input type="checkbox" id="node-input-debug" style="display:inline-block; width:auto;">
     </div>
 </script>
 
