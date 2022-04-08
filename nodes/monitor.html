@@ -1,7 +1,7 @@
 <!-- START OF MAIN NODE -->
 
 <script type="text/javascript">
-    RED.nodes.registerType('alarm',{
+    RED.nodes.registerType('monitor',{
         category: 'Smart Home',
         color: '#C0DEED',
         inputs: 1,
@@ -9,19 +9,24 @@
         icon: "font-awesome/fa-bullhorn",
         defaults: {
             name: {},
+            monitorTopic: {},
             debug: {}
         },
         label: function() {
-            return this.name || "Alarm"
+            return this.name || "Monitor"
         }
     });
 </script>
 
 
-<script type="text/html" data-template-name="alarm">
+<script type="text/html" data-template-name="monitor">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-monitorTopic"><i class="fa fa-tasks"></i> Topic</label>
+        <input type="text" id="node-input-monitorTopic" placeholder="'activate' if unset">
     </div>
     <div class="form-row">
         <label><i class="fa fa-bug"></i> Debugging</label>

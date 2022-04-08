@@ -1,7 +1,7 @@
 {
-  "name": "node-red-contrib-smarthome-alarm",
+  "name": "node-red-contrib-smarthome-monitor",
   "version": "0.0.1-alpha1",
-  "description": "Secure your smart home with this alarm node. It monitors signals and triggers the output on unexpected events.",
+  "description": "Secure your smart home with this monitoring node. It monitors signals and triggers the output on unexpected events.",
 "author": {
     "name": "Thomas Astleitner"
   },
@@ -9,22 +9,22 @@
   "node-red": {
     "version": ">=1.0.0",
     "nodes": {
-      "alarm": "nodes/alarm.js"
+      "monitor": "nodes/monitor.js"
     }
   },
   "engines": {
     "node": ">=12"
   },
-  "main": "nodes/alarm.js",
+  "main": "nodes/monitor.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/danube/node-red-contrib-smarthome-alarm.git"
+    "url": "https://github.com/danube/node-red-contrib-smarthome-monitor.git"
   },
   "keywords": [
-    "node","node-red","nodered","motion","smarthome","loxone","sps","plc","digital","alarm","police","monitoring","surveillance"
+    "node","node-red","nodered","motion","smarthome","loxone","sps","plc","digital","alarm","police","monitor","monitoring","surveillance"
   ],
   "bugs": {
-    "url": "https://github.com/danube/node-red-contrib-smarthome-powerswitch/issues"
+    "url": "https://github.com/danube/node-red-contrib-smarthome-monitor/issues"
   },
-  "homepage": "https://github.com/danube/node-red-contrib-smarthome-powerswitch"
+  "homepage": "https://github.com/danube/node-red-contrib-smarthome-monitor"
 }
