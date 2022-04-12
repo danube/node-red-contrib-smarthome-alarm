@@ -10,6 +10,7 @@
         defaults: {
             name: {},
             monitorTopic: {},
+            resetTopic: {},
             debug: {}
         },
         label: function() {
@@ -25,8 +26,12 @@
         <input type="text" id="node-input-name">
     </div>
     <div class="form-row">
-        <label for="node-input-monitorTopic"><i class="fa fa-tasks"></i> Topic</label>
+        <label for="node-input-monitorTopic"><i class="fa fa-tasks"></i> Item Topic</label>
         <input type="text" id="node-input-monitorTopic" placeholder="'activate' if unset">
+    </div>
+    <div class="form-row">
+        <label for="node-input-resetTopic"><i class="fa fa-tasks"></i> Reset Topic</label>
+        <input type="text" id="node-input-resetTopic" placeholder="'reset' if unset">
     </div>
     <div class="form-row">
         <label><i class="fa fa-bug"></i> Debugging</label>

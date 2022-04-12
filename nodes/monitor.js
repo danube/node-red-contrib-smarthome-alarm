@@ -30,11 +30,26 @@ module.exports = function(RED) {
 			// TODO working with state
 			// TODO different appearance if num = 0
 			const numItems = Object.keys(context.items).length
-			let sinpluStr = "items"
+			let fill, shape, sinpluStr, text
+
 			if (numItems === 1) {
+				sinpluStr = "item"
+			} else {
 				sinpluStr = "items"
 			}
-			that.status({fill: "grey", shape: "ring", text: numItems + " " + sinpluStr + " in storage"});
+
+			if (context.active) {
+				fill = "red"
+				shape = "dot"
+				text = "Monitoring " + numItems + " " + sinpluStr
+			} else {
+				fill = "grey"
+				shape = "ring"
+				text = numItems + " " + sinpluStr + " in storage"
+			}
+			
+			
+			that.status({fill: fill, shape: shape, text: text});
 		}
 
 		// <==== FUNCTIONS
@@ -53,12 +68,54 @@ module.exports = function(RED) {
 		
 		this.on('input', function(msg,send,done) {
 
-			// TODO validate message (topic and payload)
-			// TODO give possibility to reset items
+			// ACTIVATION MESSAGE
 			
-			context.items[msg.topic] = msg.payload
-		
-			setNodeState()
+			if (msg.topic === "activate") {
+				if (msg.payload === true) {
+					context.active = true		// TODO ist active im context am besten untergebracht??
+					setNodeState()
+				} else if (msg.payload === false) {
+					context.active = false
+					setNodeState()
+				} else {
+					// TODO send message: invalid payload on activate
+				}
+			}
+			
+			// ITEM MESSAGE IF INACTIVE
+
+			else {
+				// TODO validate message (topic and payload)
+				// TODO give possibility to reset items
+				
+				let task = null
+
+				if (context.active) {
+					if (context.items[msg.topic] != msg.payload) {
+						task = "alarm"
+					}
+				}
+
+
+
+				context.items[msg.topic] = msg.payload		// Add new item to store
+
+				
+
+
+
+				msg = {
+					items: context.items, // TODO maybe send this only if debug is active
+					task: task
+				}
+	
+				that.send(msg)
+				setNodeState()
+
+			}
+
+
+
 
 
 
