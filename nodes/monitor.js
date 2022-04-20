@@ -2,10 +2,14 @@
 
 module.exports = function(RED) {
 
+	let active = false
+	let warning = false
+	let alert = false
+	let warningTimeoutHandle
+
 	function monitor(node) {
 		RED.nodes.createNode(this, node)
 		const that = this
-
 		let err = false
 
 		// Importing node context
@@ -26,11 +30,13 @@ module.exports = function(RED) {
 		
 		// FUNCTIONS ====>
 		
-		function setNodeState(state) {
+		function setNodeStateFunc() {
 			// TODO working with state
 			// TODO different appearance if num = 0
 			const numItems = Object.keys(context.items).length
 			let fill, shape, sinpluStr, text
+
+			console.log("active: " & active & ", warning: " & warning & ", alert: " & alert)
 
 			if (numItems === 1) {
 				sinpluStr = "item"
@@ -38,18 +44,38 @@ module.exports = function(RED) {
 				sinpluStr = "items"
 			}
 
-			if (context.active) {
-				fill = "red"
-				shape = "dot"
-				text = "Monitoring " + numItems + " " + sinpluStr
-			} else {
+			if (!active) {
 				fill = "grey"
 				shape = "ring"
-				text = numItems + " " + sinpluStr + " in storage"
+				// text = numItems + " " + sinpluStr + " in storage"		// TODO preperation for rbe
+				text = "Inactive"
+			} else if (active) {
+				fill = "green"
+				shape = "dot"
+				// text = "Monitoring " + numItems + " " + sinpluStr		// TODO preperation for rbe
+				text = "Active"
+			} else if (warning) {
+				fill = "yellow"
+				shape = "dot"
+				text = "Warning"
+			} else if (alert) {
+				fill = "red"
+				shape = "dot"
+				text = "Alert"
+			} else {
+				fill = "blue"
+				shape = "ring"
+				text = "Unknown state"
 			}
 			
-			
-			that.status({fill: fill, shape: shape, text: text});
+			that.status({fill: fill, shape: shape, text: text})
+		}
+
+
+		function alertFunc() {
+			warning = false
+			alert = true
+			that.error("ALERT")
 		}
 
 		// <==== FUNCTIONS
@@ -57,7 +83,7 @@ module.exports = function(RED) {
 
 		// FIRST RUN ACTIONS ====>
 
-		setNodeState()
+		setNodeStateFunc()
 
 		// TODO verify node.monitorTopic
 
@@ -70,52 +96,63 @@ module.exports = function(RED) {
 
 			// ACTIVATION MESSAGE
 			
-			if (msg.topic === "activate") {
+			if (msg.topic === "activate") {		// TODO make configurable
+				clearTimeout(warningTimeoutHandle)
 				if (msg.payload === true) {
-					context.active = true		// TODO ist active im context am besten untergebracht??
-					setNodeState()
+					active = true		// TODO ist active im context am besten untergebracht??
+					warning = false
+					alert = false
+					setNodeStateFunc()
 				} else if (msg.payload === false) {
-					context.active = false
-					setNodeState()
+					active = false
+					warning = false
+					alert = false
+					setNodeStateFunc()
 				} else {
-					// TODO send message: invalid payload on activate
+					// TODO send message: invalid payload (not bool) on activate
 				}
 			}
 			
-			// ITEM MESSAGE IF INACTIVE
+
+			// TODO The following is a preperation for rbe filtering
+			// // ITEM MESSAGE
+
+			// else {
+			// 	// TODO validate message (topic and payload)
+			// 	// TODO give possibility to reset items
+				
+			// 	let task = null
+
+			// 	if (active) {
+			// 		if (context.items[msg.topic] != msg.payload) {
+			// 			task = "alarm"
+			// 		}
+			// 	}
+
+			// 	context.items[msg.topic] = msg.payload		// Add new item to store
+
+			// 	msg = {
+			// 		items: context.items, // TODO maybe send this only if debug is active
+			// 		task: task
+			// 	}
+	
+			// 	that.send(msg)
+			// 	setNodeState()
+
+			// }
+
 
 			else {
-				// TODO validate message (topic and payload)
-				// TODO give possibility to reset items
-				
-				let task = null
-
-				if (context.active) {
-					if (context.items[msg.topic] != msg.payload) {
-						task = "alarm"
-					}
+				if (node.warningTime > 0) {
+					warningTimeoutHandle = setTimeout(alertFunc, node.warningTime * 1000)
+					warning = true
+					setNodeStateFunc()
+					that.error("WARNING")
+				} else {
+					alertFunc()
+					setNodeStateFunc()
 				}
-
-
-
-				context.items[msg.topic] = msg.payload		// Add new item to store
-
-				
-
-
-
-				msg = {
-					items: context.items, // TODO maybe send this only if debug is active
-					task: task
-				}
-	
-				that.send(msg)
-				setNodeState()
-
 			}
-
-
-
 
 
 

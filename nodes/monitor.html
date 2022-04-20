@@ -10,7 +10,8 @@
         defaults: {
             name: {},
             monitorTopic: {},
-            resetTopic: {},
+            warningTime: {value: 0},
+            resetTopic: {},     // TODO rbe
             debug: {}
         },
         label: function() {
@@ -30,9 +31,13 @@
         <input type="text" id="node-input-monitorTopic" placeholder="'activate' if unset">
     </div>
     <div class="form-row">
+        <label for="node-input-warningTime"><i class="fa fa-tasks"></i> Warning time [s]</label>
+        <input type="text" id="node-input-warningTime">  <!-- TODO Limit type -->
+    </div>
+    <!-- <div class="form-row">     // TODO rbe
         <label for="node-input-resetTopic"><i class="fa fa-tasks"></i> Reset Topic</label>
         <input type="text" id="node-input-resetTopic" placeholder="'reset' if unset">
-    </div>
+    </div> -->
     <div class="form-row">
         <label><i class="fa fa-bug"></i> Debugging</label>
         <input type="checkbox" id="node-input-debug" style="display:inline-block; width:auto;">
