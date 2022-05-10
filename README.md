@@ -1,10 +1,17 @@
-Secure your smart home with this monitoring node. It monitors signals and triggers the output on unexpected events.
+Secure your smart home with this monitoring node. It monitors signals and triggers the output on unexpected events. A warning time can be configured, before the alarm goes off.
 
-# Input
-## Arming and disarming
-You must send a message with a defined topic and payload. The **topic** can be freely configured in the node settings. If unconfigured, "activate" is expected. The **payload** must be boolean `true` to arm or `false` to disarm.
+# Inputs
+## Arming and disarming message
+You must send a message with a defined topic. It can be freely configured in the node settings.
+
+<img src="files/screenshots/armdisarmtopic.png" width="300px" style="border:1px dashed grey">
+
+If nothing is configured, "activate" as topic is expected. The payload must be:
+* boolean `true` to arm
+* boolean `false` to disarm
+
 ## Signals to monitor
-Basically, you can connect everything on the input. As soon as the node receives any message (no matter if and what topic or message it contains, really every message counts), the timer starts and warning will be sent in the output object. If timeout is set to zero, error will be immediately set.
+Basically, you can connect everything on the input. As soon as the node receives any message (no matter if and what topic or message it contains, really every message counts, as long as it does not contain the arming topic), the node will be triggered.
 
 # Configuration
 ## Name
@@ -12,7 +19,10 @@ If unset, the node shows "Monitor". If you give any value here, the node will be
 ## Arming topic
 A defined message arms or disarms the node. The message must contain a boolean `true` or `false` to arm or disarm and must contain a defined topic. If this field is left blank, the topic must be "activate".
 ## Warning time
-When armed, the node watches out for any message on the input. If a message appears, a warning will be sent inside the output message but the alarm is still false, until the warning time has been reached. That's the time when you open a window but have not disarmed the node until the siren shouts.
+_That's the time when you open a window but have not disarmed the node until the siren shouts._
+
+When armed, the node watches out for any message on the input (not containing the arming topic). If you have configured a warning time bigger than zero, after a message, the node will send a warning message first. Once the warning time has elapsed, the node will send an alarm message. If you have configured a zero warning time, the node will send an alarm message immediately.
+
 ## Allow msg.timeout to verwrite
 Together with the TBC
 ## Debug

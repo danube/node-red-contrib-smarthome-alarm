@@ -5,7 +5,7 @@ module.exports = function(RED) {
 	let armed = false
 	let warning = false
 	let alert = false
-	let warningTime, warningTimeoutHandle
+	let warningTimeoutHandle
 
 	function monitor(node) {
 		RED.nodes.createNode(this, node)
@@ -54,7 +54,7 @@ module.exports = function(RED) {
 			}
 			
 			that.status({fill: fill, shape: shape, text: text})
-			that.send({topic: "status", payload: {"armed": armed, "warning": warning, "alert": alert}})
+			that.send({topic: "status", payload: {"armed": armed, "warning": warning, "alert": alert}})		// TODO scheint bei jedem Deploy gesendet zu werden
 
 		}
 
@@ -63,6 +63,11 @@ module.exports = function(RED) {
 			warning = false
 			alert = true
 			setNodeStateFunc()
+		}
+
+
+		function sendContext() {
+			that.send({topic: "context", payload: context})
 		}
 
 		// <==== FUNCTIONS
@@ -78,7 +83,7 @@ module.exports = function(RED) {
 		else if (node.warningTimeUnit === "h") {warningTimeFactor = 3600000}
 		else {that.error("E010: Warning time unit invalid")}
 		
-		warningTime = Number(node.warningTime) * warningTimeFactor
+		context.warningTime = Number(node.warningTime) * warningTimeFactor
 		
 		// TODO verify node.monitorTopic
 
@@ -108,7 +113,7 @@ module.exports = function(RED) {
 				}
 			} else if (armed) {
 				if (node.warningTime > 0) {
-					warningTimeoutHandle = setTimeout(alertFunc, warningTime)
+					warningTimeoutHandle = setTimeout(alertFunc, context.warningTime)
 					warning = true
 					setNodeStateFunc()
 				} else {
@@ -116,6 +121,7 @@ module.exports = function(RED) {
 				}
 			}
 
+			if (node.debug) {sendContext()}
 
 			if (err) {
 				if (done) {
