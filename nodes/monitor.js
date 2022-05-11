@@ -1,10 +1,12 @@
-// TODO Assign warning and error numbers
-
 module.exports = function(RED) {
 
 	let armed = false
 	let warning = false
 	let alert = false
+	/** This is the warning time configured by the node [ms] */
+	let warningTimeNode
+	/** This is the actual warning time [ms] */
+	let warningTime
 	let warningTimeoutHandle
 
 	function monitor(node) {
@@ -21,7 +23,7 @@ module.exports = function(RED) {
 		 */
 		let context = nodeContext.get("context")
 		if (!context) {
-			// that.warn("No previous sensor states to restore. See https://nodered.org/docs/user-guide/context#saving-context-data-to-the-file-system how to persistently save states.")
+			if (node.warningTimeOverride) {that.warn("W001: Not able to store warning time permanently")}
 			context = {
 				items: {}
 			}
@@ -30,62 +32,93 @@ module.exports = function(RED) {
 		
 		// FUNCTIONS ====>
 
-		function setNodeStateFunc() {
-			let fill, shape, text
+		function sendNodeStateFunc() {
+			let fill, shape, textStatus
+			let textTimeout = ""
+
+			let timeoutDate = new Date(warningTime)
+			let timeoutM = timeoutDate.getMinutes()
+			let timeoutS = timeoutDate.getSeconds()
+			let timeoutMs = timeoutDate.getMilliseconds()
+			
+			if (timeoutM > 0) {
+				textTimeout = timeoutM + "m"
+			}
+			if (timeoutS > 0) {
+				textTimeout = textTimeout + timeoutS + "s"
+			}
+			if (timeoutMs > 0 || warningTime == 0) {
+				textTimeout = textTimeout + timeoutMs + "ms"
+			}
+
+
 
 			if (!armed) {
 				fill = "grey"
 				shape = "ring"
-				text = "Disarmed"
+				textStatus = "Disarmed"
 			} else {
 				fill = "green"
 				shape = "dot"
-				text = "Armed"
+				textStatus = "Armed"
 			}
 			
 			if (alert) {
 				fill = "red"
 				shape = "dot"
-				text = "Alert"
+				textStatus = "Alert"
 			} else if (warning) {
 				fill = "yellow"
 				shape = "dot"
-				text = "Warning"
+				textStatus = "Warning"
 			}
 			
+			let text = textTimeout + " | " + textStatus
+
 			that.status({fill: fill, shape: shape, text: text})
-			that.send({topic: "status", payload: {"armed": armed, "warning": warning, "alert": alert}})		// TODO scheint bei jedem Deploy gesendet zu werden
-
+			
 		}
-
-
+		
+		
+		function sendStatusMessageFunc() {
+			that.send({topic: "status", payload: {"armed": armed, "warning": warning, "alert": alert}})
+			sendNodeStateFunc()
+		}
+		
+		
+		
 		function alertFunc() {
 			warning = false
 			alert = true
-			setNodeStateFunc()
+			sendStatusMessageFunc()
 		}
 
 
-		function sendContext() {
-			that.send({topic: "context", payload: context})
+		function warningTimeCalcFunc() {
+			if (node.warningTimeOverride && context.warningTimeOverrideActive) {
+				warningTime = context.warningTimeOverrideValue
+			} else {
+				warningTime = warningTimeNode
+			}
 		}
 
 		// <==== FUNCTIONS
 
 
 		// FIRST RUN ACTIONS ====>
-
-		setNodeStateFunc()
-
+		
 		let warningTimeFactor
 		if (node.warningTimeUnit === "s") {warningTimeFactor = 1000}
 		else if (node.warningTimeUnit === "m") {warningTimeFactor = 60000}
 		else if (node.warningTimeUnit === "h") {warningTimeFactor = 3600000}
 		else {that.error("E010: Warning time unit invalid")}
-		
-		context.warningTime = Number(node.warningTime) * warningTimeFactor
-		
-		// TODO verify node.monitorTopic
+		warningTimeNode = Number(node.warningTime) * warningTimeFactor
+		warningTimeCalcFunc()
+		sendNodeStateFunc()
+
+		let armingTopic = node.armingTopic || "activate"
+
+		// if (node.debug) {console.log({topic: "debug", node: node, context: context})}
 
 		// <==== FIRST RUN ACTIONS
 
@@ -94,34 +127,47 @@ module.exports = function(RED) {
 		
 		this.on('input', function(msg,send,done) {
 
-			// ACTIVATION MESSAGE
-			
-			if (msg.topic === "activate") {		// TODO make configurable
+			// Valid msg.timeout
+			if (node.warningTimeOverride && typeof msg.timeout == "number" && msg.timeout >= 0) {
+				context.warningTimeOverrideActive = true
+				context.warningTimeOverrideValue = msg.timeout
+				warningTimeCalcFunc()
+				sendNodeStateFunc()
+			// Invalid or disabling msg.timeout
+			} else if (node.warningTimeOverride && msg.timeout < 0) { // DOCME wenn kleiner null, ist timeout deaktiviert und es wird node setting wert verwendet
+				context.warningTimeOverrideActive = false
+				warningTimeCalcFunc()
+				sendNodeStateFunc()
+			// Arming message
+			} else if (msg.topic === armingTopic) {
+				// Arm
 				clearTimeout(warningTimeoutHandle)
 				if (msg.payload === true) {
-					armed = true		// TODO ist active im context am besten untergebracht??
+					armed = true
 					warning = false
 					alert = false
-					setNodeStateFunc()
+					sendStatusMessageFunc()
+				// Disarm
 				} else if (msg.payload === false) {
 					armed = false
 					warning = false
 					alert = false
-					setNodeStateFunc()
+					sendStatusMessageFunc()
+				// Invalid payload
 				} else {
-					// TODO send message: invalid payload (not bool)
+					that.warn("W010: Arming payload invalid")
 				}
+			// Any other message will be monitored
 			} else if (armed) {
 				if (node.warningTime > 0) {
-					warningTimeoutHandle = setTimeout(alertFunc, context.warningTime)
+					clearTimeout(warningTimeoutHandle)
+					warningTimeoutHandle = setTimeout(alertFunc, warningTime)
 					warning = true
-					setNodeStateFunc()
+					sendStatusMessageFunc()
 				} else {
 					alertFunc()
 				}
 			}
-
-			if (node.debug) {sendContext()}
 
 			if (err) {
 				if (done) {

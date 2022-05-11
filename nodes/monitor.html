@@ -10,16 +10,14 @@
         icon: "font-awesome/fa-bullhorn",
         defaults: {
             name: {},
-            monitorTopic: {},
+            armingTopic: {},
             warningTime: {value: 30},
             warningTimeUnit: {value: "s"},
             warningTimeOverride: {value: false},
             debug: {}
         },
         label: function() {
-            let app = this.warningTime + this.warningTimeUnit
-            if (this.warningTimeOverride) {app = app + "*"}
-            return (this.name || "Monitor") + " (" + app + ")"
+            return (this.name || "Monitor")
         }
     });
 </script>
@@ -39,8 +37,8 @@
         <input type="text" id="node-input-name">
     </div>
     <div class="form-row">
-        <label for="node-input-monitorTopic"><i class="fa fa-tasks"></i> Arming topic</label>
-        <input type="text" id="node-input-monitorTopic" placeholder="'activate' if unset">
+        <label for="node-input-armingTopic"><i class="fa fa-tasks"></i> Arming topic</label>
+        <input type="text" id="node-input-armingTopic" placeholder="'activate' if unset">
     </div>
     <div class="form-row">
         <label><i class="fa fa-tasks"></i> Warning time</label>
@@ -55,10 +53,10 @@
         <label></label>
         <input type="checkbox" id="node-input-warningTimeOverride" style="margin-left:0px; vertical-align:top; width:auto !important;"> <label style="width:auto !important;" for="node-input-warningTimeOverride">Allow msg.timeout to overwrite</label>
     </div>
-    <div class="form-row">
+    <!-- <div class="form-row">
         <label><i class="fa fa-bug"></i> Debugging</label>
         <input type="checkbox" id="node-input-debug" style="display:inline-block; width:auto;">
-    </div>
+    </div> -->
 </script>
 
 <!-- END OF MAIN NODE -->
