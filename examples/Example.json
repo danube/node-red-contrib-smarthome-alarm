@@ -1,0 +1,218 @@
+[
+    {
+        "id": "a5b484b5a5703aed",
+        "type": "monitor",
+        "z": "c21155c2c262e593",
+        "name": "",
+        "armingTopic": "",
+        "warningTime": 30,
+        "warningTimeUnit": "s",
+        "warningTimeOverride": true,
+        "x": 720,
+        "y": 160,
+        "wires": [
+            [
+                "add914dcc4803001"
+            ]
+        ]
+    },
+    {
+        "id": "4fb71ae9ebf12ffc",
+        "type": "inject",
+        "z": "c21155c2c262e593",
+        "name": "Arm",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "activate",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 270,
+        "y": 120,
+        "wires": [
+            [
+                "04d95fad4fe7e334"
+            ]
+        ]
+    },
+    {
+        "id": "1c0b0907c53651e0",
+        "type": "inject",
+        "z": "c21155c2c262e593",
+        "name": "Disarm",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "activate",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 270,
+        "y": 160,
+        "wires": [
+            [
+                "a5b484b5a5703aed"
+            ]
+        ]
+    },
+    {
+        "id": "04d95fad4fe7e334",
+        "type": "change",
+        "z": "c21155c2c262e593",
+        "name": "Overwrite timeout: 15s",
+        "rules": [
+            {
+                "t": "set",
+                "p": "timeout",
+                "pt": "msg",
+                "to": "15000",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 120,
+        "wires": [
+            [
+                "a5b484b5a5703aed"
+            ]
+        ]
+    },
+    {
+        "id": "1552d4f1ba9c2eee",
+        "type": "inject",
+        "z": "c21155c2c262e593",
+        "name": "Sensor 1",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "sensor1",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 280,
+        "y": 220,
+        "wires": [
+            [
+                "a5b484b5a5703aed"
+            ]
+        ]
+    },
+    {
+        "id": "27b245d180afa053",
+        "type": "inject",
+        "z": "c21155c2c262e593",
+        "name": "Sensor 2",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "sensor2",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 280,
+        "y": 260,
+        "wires": [
+            [
+                "a5b484b5a5703aed"
+            ]
+        ]
+    },
+    {
+        "id": "4a8089a8dc1768e4",
+        "type": "inject",
+        "z": "c21155c2c262e593",
+        "name": "Sensor 3",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "sensor3",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 280,
+        "y": 300,
+        "wires": [
+            [
+                "a5b484b5a5703aed"
+            ]
+        ]
+    },
+    {
+        "id": "add914dcc4803001",
+        "type": "debug",
+        "z": "c21155c2c262e593",
+        "name": "Debugger",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "e3bc153f428673c4",
+        "type": "comment",
+        "z": "c21155c2c262e593",
+        "name": "Instructions",
+        "info": "msg.timeout will be added to the arming message. The option to allow the timeout value to be overwritten is active in the node settings.\n\nOnce armed, by triggering any of the sensors, the warning will be fired and after the warning time has elapsed, an alert will be sent.\n\nKeep the debugger console open to see the actions.",
+        "x": 190,
+        "y": 60,
+        "wires": []
+    }
+]

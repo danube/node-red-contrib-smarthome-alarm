@@ -1,0 +1,57 @@
+<script type="text/html" data-help-name="monitor">
+    <p>Secure your smart home with this monitoring node. It monitors signals and triggers the output on unexpected events. A warning time can be configured, before the alarm goes off.</p>
+
+
+
+    <h3>Configuration</h3>
+        <h4 style="font-weight: bolder;">Name</h4>
+        <p>If unset, the node shows "Monitor" on the drawboard. If you give it any value here, the node will be shown with this string.</p>
+        
+        <h4 style="font-weight: bolder;">Arming topic</h4>
+        <p>A defined message arms or disarms the node. The message must contain a defined topic. If this field is left blank, the topic must be "activate". See "Arming and disarming message" above for further information.</p>
+        
+        <h4 style="font-weight: bolder;">Warning time</h4>
+        <i>That's the time when you open a window but have not disarmed the node until the siren shouts.</i>
+        <p>When armed, the node watches out for a sensor message. If you have configured a warning time bigger than zero, the node will send a warning message first and a timer starts. Once the configured warning time has elapsed, the node will send an alarm message. If you have configured a zero warning time, the node will send an alarm message immediately. The same is valid if you overwrite the warning time with a message.</p>
+
+        <h4>Allow msg.timeout to overwrite</h4>
+        <p>If this checkbox is active, you can modify the warning time during runtime, without manually re-configure and re-deploy the node. See "Overwrite warning time" above to learn more about the message specification.</p>
+        
+
+
+
+
+
+
+    <h3>Node status</h3>
+    <p>The status shows the active warning time in a readable format together with the functional state. The state can be `Disarmed` with a grey ring, `Armed` with a green dot, `Warning` with a yellow dot or `Alert` with a red dot.</p>
+
+
+
+
+
+
+
+
+    <h3>Inputs</h3>
+
+
+    <h4>Arming and disarming</h4>
+    As long as the node is disarmed, nothing will happen. Ever. Once armed, the sensors are monitored and warning and alert messages on the output will be sent.
+    <dl class="message-properties">
+        <dt>topic<span class="property-type">string</span></dt>
+        <dd>If you have left blank the text field "Arming topic" in the node settings, the default string <code>activate</code> must be in the payload, otherwise use the string you have configured.</dd>
+        <dt>payload<span class="property-type">boolean</span></dt>
+        <dd><code>true</code> arms, <code>false</code> disarms.</dd>
+    </dl>
+
+
+    <h4>Overwrite warning time</h4>
+    While the warning time in the node settings is static, you can dynamically change this time with a message.
+    <dl class="message-properties">
+        <dt>timeout<span class="property-type">number</span></dt>
+        <dd>Value in miliseconds, i.e. 15000 sets the warning time to 15 seconds.</dd>
+    </dl>
+    
+
+</script>

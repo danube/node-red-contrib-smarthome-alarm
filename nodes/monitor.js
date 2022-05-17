@@ -23,7 +23,7 @@ module.exports = function(RED) {
 		 */
 		let context = nodeContext.get("context")
 		if (!context) {
-			if (node.warningTimeOverride) {that.warn("W001: Not able to store warning time permanently")}
+			// if (node.warningTimeOverride) {that.warn("W001: Not able to store warning time permanently")}
 			context = {
 				items: {}
 			}
@@ -134,12 +134,14 @@ module.exports = function(RED) {
 				warningTimeCalcFunc()
 				sendNodeStateFunc()
 			// Invalid or disabling msg.timeout
-			} else if (node.warningTimeOverride && msg.timeout < 0) { // DOCME wenn kleiner null, ist timeout deaktiviert und es wird node setting wert verwendet
+			} else if (node.warningTimeOverride && msg.timeout < 0) {
 				context.warningTimeOverrideActive = false
 				warningTimeCalcFunc()
 				sendNodeStateFunc()
+			}
+			
 			// Arming message
-			} else if (msg.topic === armingTopic) {
+			if (msg.topic === armingTopic) {
 				// Arm
 				clearTimeout(warningTimeoutHandle)
 				if (msg.payload === true) {
