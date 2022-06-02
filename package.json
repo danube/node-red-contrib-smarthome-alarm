@@ -2,7 +2,7 @@
   "name": "node-red-contrib-smarthome-monitor",
   "version": "1.0.0",
   "description": "Secure your smart home with this monitoring node. It monitors signals and triggers the output on unexpected events. Trigger your siren on intruders.",
-"author": {
+  "author": {
     "name": "Thomas Astleitner"
   },
   "license": "EUPL-1.2",
@@ -26,5 +26,6 @@
   "bugs": {
     "url": "https://github.com/danube/node-red-contrib-smarthome-monitor/issues"
   },
-  "homepage": "https://github.com/danube/node-red-contrib-smarthome-monitor"
+  "homepage": "https://github.com/danube/node-red-contrib-smarthome-monitor",
+  "funding": "https://www.buymeacoffee.com/asti"
 }

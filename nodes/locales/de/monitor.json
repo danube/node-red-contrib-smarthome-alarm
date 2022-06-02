@@ -1,11 +1,10 @@
 {
-    "common": {
-        "name": "Name"
-    },
-    "head": {
-    },
-    "placeholder": {
-        "name": "Name Platzhalter"
-    }
-
+    "name": "Name",
+    "armingtopic": "topic zur Aktivierung",
+    "armingtopicplaceholder": "'activate' falls leer",
+    "warningtime": "Warnzeit",
+    "seconds": "Sekunden",
+    "minutes": "Minuten",
+    "hours": "Stunden",
+    "allowmsgtooverwrite": "Erlaube Überschreiben mit msg.timeout"
 }

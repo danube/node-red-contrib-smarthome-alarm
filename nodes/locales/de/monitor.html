@@ -1,4 +1,60 @@
-<script type="text/html" data-help-name="mynode">
-    <p>Dieses ist der erste Paragraf. Dieser erscheint im Popup.</p>
-    <p>Danach kommen weitere Paragrafen.</p>
+<script type="text/html" data-help-name="monitor">
+    <p>Sichere Dein Smart Home mit diesem Überwachungs Node. Es überwacht Signale und schickt eine Nachricht am Ausgang bei unerwarteten Ereignissen. Eine Warnzeit kann konfiguriert werden, bevor der Alarm ausgelöst wird.</p>
+
+    <h3 style="font-weight: bolder">Fragen oder Fehler</h3>
+        <p>Bitte kontaktiere mich, wenn Du irgendwelche Fragen hast. Lass mich wissen, wenn etwas unklar ist oder Du der Meinung bist, einen Bug oder einen Tippfehler gefunden zu haben. Ich freue mich über jede Gelegenheit, meine Lösungen zu verbessern, da ich die auch selbst verwende. <a href="https://github.com/danube/node-red-contrib-smarthome-monitor/issues" target="_blank">Erstelle einen Issue auf GitHub</a> oder <a href="https://discord.gg/dDCxcbYnmd" target="_blank">schreibe mit mir auf Discord</a>.</p>
+        <p>Wenn Du magst, <a href="https://www.buymeacoffee.com/asti" target="_blank">spendiere mir einen Kaffee.</p>
+        <img src="https://raw.githubusercontent.com/danube/node-red-contrib-smarthome-monitor/main/files/bmc-white-button.png" onerror="this.onerror=null; this.remove();"></a>
+
+    <h3 style="font-weight: bolder">Konfiguration</h3>
+
+        <h4 style="font-weight: bolder;">Name</h4>
+        <p>Falls das Feld leer gelassen wird, wird "Monitor" im Editor angezeigt. Bei Angabe eines beliebigen Werts wird stattdessen dieser angezeigt.</p>
+        
+        <h4 style="font-weight: bolder;">topic zur Aktivierung</h4>
+        <p>Eine definierte Nachricht am Node Eingang aktiviert und deaktiviert die Überwachungsfunktion. Die Nachricht muss ein definiertes Topic enthalten, welches hier konfiguriert werden kann. Falls das Feld leer gelassen wird, muss das Topic der Nachricht "activate" sein. Schaue unter "<a href="#armdisarm">Aktivieren und deaktivieren</a>" nach, um mehr zu erfahren.</p>
+        
+        <h4 style="font-weight: bolder;">Warnzeit</h4>
+        <p>Wenn aktiviert, wartet der Node auf Sensor Nachrichten. Wenn Du eine Warnzeit größer Null konfiguriert hast, wird bei einem Ereignis zuerst eine Warnung ausgesandt und die Warnzeit beginnt zu laufen. Wenn die Warnzeit abgelaufen ist, wird der Node eine Alarmnachricht versenden. Wenn die Warnzeit Null ist, wird sofort eine Alarmnachricht versandt. Das gilt auch, wenn Du die Warnzeit mit einer Nachricht überschreibst.</p>
+        <p>Zusammengefasst handelt es sich dabei um die Zeit, die Du hast, wenn Du nachts das Fenster öffnest, bis die Sirene abgeht.</p>
+
+        <h4 style="font-weight: bolder;">Überschreibe mit msg.timeout</h4>
+        <p>Wenn die Checkbox aktiv ist, kannst Du die Warnzeit mit während der Laufzeit beeinflussen. ohne dass Du händisch die Konfiguration ändern und übertragen musst. Erfahre mehr über die Nachrichtenzusammenstellung unter "<a href="#ovwrntime">Überschreibe Warnzeit</a>".</p>
+        
+    <h3 style="font-weight: bolder;">Node Status</h3>
+    <p>Der Status zeigt die aktuelle Warnzeit gemeinsam mit dem Funktionszustand an. Der Status kann "Disarmed" mit einem grauen Ring, "Armed" mit einem grünen Punkt, "Warning" mit einem gelben Punkt oder "Alert" mit einem roten Punkt sein.</p>
+    <img src="https://raw.githubusercontent.com/danube/node-red-contrib-smarthome-monitor/main/files/screenshots/node-disarmed.png" onerror="this.onerror=null; this.remove();">
+    <img src="https://raw.githubusercontent.com/danube/node-red-contrib-smarthome-monitor/main/files/screenshots/node-armed.png" onerror="this.onerror=null; this.remove();">
+    <img src="https://raw.githubusercontent.com/danube/node-red-contrib-smarthome-monitor/main/files/screenshots/node-warning.png" onerror="this.onerror=null; this.remove();">
+    <img src="https://raw.githubusercontent.com/danube/node-red-contrib-smarthome-monitor/main/files/screenshots/node-alert.png" onerror="this.onerror=null; this.remove();">
+
+    <h3 style="font-weight: bolder;">Eingangsnachrichten</h3>
+
+        <h4 id="armdisarm" style="font-weight: bolder;">Aktivieren und Deaktivieren</h4>
+        <p>Solange der Node deaktiviert ist, wird nichts passieren. Nie. Sobald der Node aktiviert ist, wird der Eingang überwacht und es wird bei jeglicher Eingangsnachricht eine Warnung bzw. ein Alarm ausgegeben.</p>
+        <dl class="message-properties">
+            <dt>msg.topic<span class="property-type">string</span></dt>
+            <dd>Wenn Du das Feld "topic zur Aktivierung" leer lässt, dann verwende <code>activate</code> als topic. Ansonsten verwende den String, den Du konfiguriert hast.</dd>
+            <dt>msg.payload<span class="property-type">string</span></dt>
+            <dd><code>true</code> zum Aktivieren, <code>false</code> zum Deaktivieren.</dd>
+        </dl>
+
+        <h4 id="ovwrntime" style="font-weight: bolder;">Überschreibe Warnzeit</h4>
+        <p>Während die Warnzeit in der Node Konfiguration statisch konfiguriert ist, hast Du die Möglichkeit, dynamisch während der Laufzeit die Warnzeit zu ändern. Füge <code>msg.timeout</code> zu jeder beliebigen Nachricht hinzu, beispielsweise in die Aktivierungs-Nachricht.</p>
+        <dl class="message-properties">
+            <dt>msg.timeout<span class="property-type">number</span></dt>
+            <dd>Wert in Milisekunden, z.B. <code>15000</code> setzt die Warnzeit auf 15 Sekunden.</dd>
+        </dl>
+
+    <h3 style="font-weight: bolder;">Warn- und Fehlercodes</h3>
+    <p>Warn- und Fehlercodes werden sowohl im Node-RED Debugger als auch auf der Konsole ausgegeben. Es ist also eine gute Idee, eines davon im Auge zu behalten. Wenn eine Warnung oder ein Fehler passiert, so beginnt diese Meldung mit einer eindeutigen Kennung. Diese beginnt entweder mit einem "W" für eine Warnung oder einem "E" für einen Fehler (Error). Beispiel: "E007: Invalid James Bond detected, replace!". Im Folgenden findest Du die Liste an unterstützten Identifikatoren.</p>
+
+        <h4 style="font-weight: bolder;">Warnungen (Wxxx)</h4>
+            <h5 style="font-weight: bolder;">W010: Arming payload invalid</h5>
+            <p>Der Node erhielt eine Aktivierungsnachricht. Eine solche Nachricht muss als Payload ein boolsches <code>true</code> zum Aktivieren oder <code>false</code> zum Deaktivieren enthalten. Das Payload war nichts davon, weshalb die Warnung kam. Stelle sicher, dass Deine Aktivierungsnachricht ein korrektes Payload enthält.</p>
+
+        <h4 style="font-weight: bolder;">Fehler / Errors (Exxx)</h4>
+            <h5 style="font-weight: bolder;">E010: Warning time unit invalid</h5>
+            <p>In Deiner Node Konfiguration kannst Du eine Warnzeit einstellen (oder <code>0</code> einstellen, um die Warnfunktion zu deaktivieren) gemeinsam mit einer Einheit (Sekunden, Minuten, Stunden). Da diese Einheit anhand eines Dropdowns eingegeben wird, sollte es nicht passieren, dass die Funktion eine andere Einheit erhält. Trotzdem wird die Einheit geprüft und falls der seltsame Fall eintritt und eine nicht vorgesehene Einheit erhalten wird, wirst Du diesen Fehler sehen. Bitte stelle Kontakt zum Entwickler her um festzustellen, was die Ursache sein kann.</p>
+
 </script>

@@ -26,32 +26,32 @@
 <script type="text/html" data-template-name="monitor">
     <style>
         .red-ui-editor .form-row label {
-            width: 120px
+            width: 150px
         }
         .red-ui-editor .form-row input {
             width: 300px
         }
     </style>
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-input-name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="name"></span></label>
+        <input type="text" id="node-input-name" placeholder="Monitor">
     </div>
     <div class="form-row">
-        <label for="node-input-armingTopic"><i class="fa fa-tasks"></i> Arming topic</label>
-        <input type="text" id="node-input-armingTopic" placeholder="'activate' if unset">
+        <label for="node-input-armingTopic"><i class="fa fa-tasks"></i> <span data-i18n="armingtopic"></span></label>
+        <input type="text" id="node-input-armingTopic" data-i18n="[placeholder]armingtopicplaceholder">
     </div>
     <div class="form-row">
-        <label><i class="fa fa-tasks"></i> Warning time</label>
+        <label><i class="fa fa-sliders"></i> <span data-i18n="warningtime"></span></label>
         <input type="number" step="1" min="0" id="node-input-warningTime" style="text-align: end; width: 70px !important">
         <select id="node-input-warningTimeUnit" style="width:140px !important">
-            <option value="s">Seconds</option>
-            <option value="m">Minutes</option>
-            <option value="h">Hours</option>
+            <option value="s" data-i18n="seconds"></option>
+            <option value="m" data-i18n="minutes"></option>
+            <option value="h" data-i18n="hours"></option>
         </select>
     </div>
     <div class="form-row">
         <label></label>
-        <input type="checkbox" id="node-input-warningTimeOverride" style="margin-left:0px; vertical-align:top; width:auto !important;"> <label style="width:auto !important;" for="node-input-warningTimeOverride">Allow msg.timeout to overwrite</label>
+        <input type="checkbox" id="node-input-warningTimeOverride" style="margin-left:0px; vertical-align:top; width:auto !important;"> <label style="width:auto !important;" for="node-input-warningTimeOverride"><span data-i18n="allowmsgtooverwrite"></span></label>
     </div>
     <!-- <div class="form-row">
         <label><i class="fa fa-bug"></i> Debugging</label>
