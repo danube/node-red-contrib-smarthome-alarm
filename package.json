@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-smarthome-monitor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Secure your smart home with this monitoring node. It monitors signals and triggers the output on unexpected events. Trigger your siren on intruders.",
   "author": {
     "name": "Thomas Astleitner"
